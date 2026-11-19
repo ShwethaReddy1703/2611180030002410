@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
@@ -27,10 +28,7 @@ jobs:
           submodules: true
           lfs: false
 
-      # Added to reproduce customer's OIDC configuration
-      - name: Install OIDC Client from Core Package
-        run: npm install @actions/core@1.6.0 @actions/http-client
-
+      # Generate GitHub OIDC token
       - name: Get Id Token
         uses: actions/github-script@v6
         id: idtoken
@@ -52,7 +50,7 @@ jobs:
           api_location: ""
           output_location: ""
 
-          # Added to match customer's configuration
+          # Match customer configuration
           github_id_token: ${{ steps.idtoken.outputs.result }}
 
   close_pull_request_job:
@@ -60,6 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Close Pull Request Job
 
+    # Match customer Close PR configuration
     permissions:
       contents: read
 
